@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUS 120 - Principles of Business</title>
+    <style>
+        :root {
+            /* Color Palette */
+            --primary: #004d80;
+            --primary-hover: #003355;
+            --secondary: #f0f4f8;
+            --text-main: #2d3748;
+            --text-muted: #4a5568;
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --border-light: #edf2f7;
+            --accent: #e53e3e;
+            
+            /* Typography */
+            --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            
+            /* Layout */
+            --max-width: 1000px;
+            --radius: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px; /* Offset for sticky nav */
+        }
+
+        body {
+            font-family: var(--font-stack);
+            font-size: 1.125rem; /* 18px base for readable text */
+            line-height: 1.7;
+            color: var(--text-main);
+            background-color: var(--bg-page);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #0073bc 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin: 0 0 1rem 0;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav ul {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover, nav a:focus {
+            background-color: var(--secondary);
+            color: var(--primary);
+            border-color: var(--border);
+        }
+
+        main {
+            max-width: var(--max-width);
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 2.25rem;
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        ul.contact-info {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        ul.contact-info li {
+            background-color: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        ul.contact-info strong {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            box-shadow: 0 0 0 1px var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background-color: var(--bg-card);
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--secondary);
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+
+        tr:hover td {
+            background-color: var(--secondary);
+        }
+
+        /* Responsive Mobile Tables */
+        @media (max-width: 768px) {
+            .table-wrapper {
+                box-shadow: none;
+                background: transparent;
+            }
+            
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                background-color: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+                box-shadow: var(--shadow-sm);
+            }
+            
+            tr:nth-child(even) {
+                background-color: var(--bg-card); /* Remove zebra striping on mobile cards */
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px solid var(--border-light);
+                position: relative;
+                padding: 0.75rem 0;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            td:last-child {
+                border-bottom: 0;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                color: var(--primary);
+            }
+        }
+
+        .grades-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .grades-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .policy-card {
+            background-color: var(--secondary);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .policy-card h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background-color: var(--primary);
+            color: white;
+            margin-top: 4rem;
+        }
+        
+        footer p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            section {
+                padding: 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            nav a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <h1>BUS 120: Principles of Business</h1>
+        <p><strong>Instructor:</strong> Dr. Vincent Domingo</p>
+        <p><strong>Semester:</strong> Fall 2026</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#glance">Course at a glance</a></li>
+            <li><a href="#schedule">Weekly schedule</a></li>
+            <li><a href="#grades">How grades work</a></li>
+            <li><a href="#policies">Policies</a></li>
+            <li><a href="#practice">Practice</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="glance">
+            <h2>Course at a glance</h2>
+            <ul class="contact-info">
+                <li>
+                    <strong>Class Meeting Days/Times and Location:</strong> 
+                    In-Person.
+                </li>
+                <li>
+                    <strong>Office Hours:</strong> 
+                    Mon (130pm - 330pm), Thu (11am-2pm on Zoom), or by appointment
+                </li>
+                <li>
+                    <strong>Contact:</strong> 
+                    Email: vdoming@hawaii.edu | Phone: Please use Email
+                </li>
+            </ul>
+        </section>
+
+        <section id="schedule">
+            <h2>Weekly schedule</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Topic</th>
+                            <th>Reading</th>
+                            <th>What is Due (Sunday 10PM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Week">1</td>
+                            <td data-label="Topic">Understanding Business Ethics and Social Responsibility</td>
+                            <td data-label="Reading">Chapter 2</td>
+                            <td data-label="What is Due">Padlet - Student Introductions, C2 Case, MyLab - C2 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">2</td>
+                            <td data-label="Topic">Entrepreneurship, New Ventures, and Business Ownership</td>
+                            <td data-label="Reading">Chapter 3</td>
+                            <td data-label="What is Due">C3 Case, MyLab - C3 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">3</td>
+                            <td data-label="Topic">Understanding the Global Context of Business</td>
+                            <td data-label="Reading">Chapter 4</td>
+                            <td data-label="What is Due">C4 Case, MyLab - C4 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">4</td>
+                            <td data-label="Topic">Managing the Business</td>
+                            <td data-label="Reading">Chapter 5</td>
+                            <td data-label="What is Due">C5 Case, MyLab - C5 Quiz, Padlet Post, Padlet Reply<br><br><em>(Weeks 4 - 16: Business Project Begins)</em></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">5</td>
+                            <td data-label="Topic">Organizing the Business</td>
+                            <td data-label="Reading">Chapter 6</td>
+                            <td data-label="What is Due">C6 Case, MyLab - C6 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">6</td>
+                            <td data-label="Topic">Operations Management and Quality</td>
+                            <td data-label="Reading">Chapter 7</td>
+                            <td data-label="What is Due">C7 Case, MyLab - C7 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">7</td>
+                            <td data-label="Topic">Employee Behavior and Motivation</td>
+                            <td data-label="Reading">Chapter 8</td>
+                            <td data-label="What is Due">C8 Case, MyLab - C8 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">8</td>
+                            <td data-label="Topic">Leadership and Decision Making</td>
+                            <td data-label="Reading">Chapter 9</td>
+                            <td data-label="What is Due">C9 Case, MyLab - C9 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">9</td>
+                            <td data-label="Topic">Human Resource Management and Labor Relations</td>
+                            <td data-label="Reading">Chapter 10</td>
+                            <td data-label="What is Due">C10 Case, MyLab - C10 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">10</td>
+                            <td data-label="Topic">Marketing Processes and Consumer</td>
+                            <td data-label="Reading">Chapter 11</td>
+                            <td data-label="What is Due">C11 Case, MyLab - C11 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">11</td>
+                            <td data-label="Topic">Developing and Pricing Product</td>
+                            <td data-label="Reading">Chapter 12</td>
+                            <td data-label="What is Due">C12 Case, MyLab - C12 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">12</td>
+                            <td data-label="Topic">Distributing and Promoting Products</td>
+                            <td data-label="Reading">Chapter 13</td>
+                            <td data-label="What is Due">C13 Case, MyLab - C13 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">13</td>
+                            <td data-label="Topic">Information Technology (IT) for Business</td>
+                            <td data-label="Reading">Chapter 14</td>
+                            <td data-label="What is Due">C14 Case, MyLab - C14 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">14</td>
+                            <td data-label="Topic">The Role of Accountants and Accounting Information</td>
+                            <td data-label="Reading">Chapter 15</td>
+                            <td data-label="What is Due">C15 Case, MyLab - C15 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">15</td>
+                            <td data-label="Topic">Managing Business Finances</td>
+                            <td data-label="Reading">Chapter 17</td>
+                            <td data-label="What is Due">C17 Case, MyLab - C17 Quiz, Padlet Post, Padlet Reply</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Week">16</td>
+                            <td data-label="Topic">Finals</td>
+                            <td data-label="Reading">-</td>
+                            <td data-label="What is Due">Final Exam, Business Project Due</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="grades">
+            <h2>How grades work</h2>
+            <div class="grades-grid">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Assessment Category</th>
+                                <th>Weight</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Assessment Category">15 Cases</td>
+                                <td data-label="Weight">15%</td>
+                                <td data-label="Points">15 pts</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Assessment Category">15 Quizzes</td>
+                                <td data-label="Weight">30%</td>
+                                <td data-label="Points">30 pts</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Assessment Category">15 Padlet Discussions</td>
+                                <td data-label="Weight">15%</td>
+                                <td data-label="Points">15 pts</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Assessment Category">Business Project</td>
+                                <td data-label="Weight">20%</td>
+                                <td data-label="Points">20 pts</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Assessment Category">Final Exam</td>
+                                <td data-label="Weight">20%</td>
+                                <td data-label="Points">20 pts</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Assessment Category"><strong>Total</strong></td>
+                                <td data-label="Weight"><strong>100%</strong></td>
+                                <td data-label="Points"><strong>100 pts</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Letter Grade</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Letter Grade">A-</td>
+                                <td data-label="Percentage">90 - 100%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Letter Grade">B-</td>
+                                <td data-label="Percentage">80 - 89%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Letter Grade">C-</td>
+                                <td data-label="Percentage">70 - 79%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Letter Grade">D-</td>
+                                <td data-label="Percentage">60 - 69%</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Letter Grade">F-</td>
+                                <td data-label="Percentage">0 - 59%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="policies">
+            <h2>Policies</h2>
+            
+            <div class="policy-card">
+                <h3>Late Assignment Policy</h3>
+                <p>Each online week starts on Monday 12:01AM and ends Sunday 10PM. Assignments must be turned in on time for full credit. No late assignments are accepted unless the instructor is notified at least 24 hours in advance and given a valid reason. This is a firm policy and the only exceptions will be for very extreme situations such as documented medical emergencies (being sick is not a medical emergency).</p>
+            </div>
+
+            <div class="policy-card">
+                <h3>Attendance Policy</h3>
+                <p>This is an in-person. Attendance is expected because students will participate in group discussions and case studies, and ultimately be graded for participation. If a student expects to miss a class, they must notify the instructor at least 24 hours in advance and give a valid reason in order to make up the assignment.</p>
+            </div>
+
+            <div class="policy-card">
+                <h3>Use of Artificial Intelligence (AI)</h3>
+                <p>AI is permitted in this class. It is allowed with attribution, meaning that a student must credit the source of the AI information. To protect the privacy of all students and maintain a safe learning environment, students are not permitted to use AI-based tools (e.g., Otter.ai, Fireflies.ai, Zoom AI Companion) to record, transcribe, or analyze class conversations.</p>
+            </div>
+        </section>
+
+        <section id="practice">
+            <h2>Practice</h2>
+            <p>Test your knowledge before diving into the weekly assignments.</p>
+            <br>
+            <a href="quiz.html" class="btn">Practice quiz</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Instructor: Dr. Vincent Domingo &copy; 2026</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICS 691G - Pairwise Alignment Quiz</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --bg: #f9f9f9;
+            --text: #333;
+            --correct-bg: #d4edda;
+            --correct-text: #155724;
+            --wrong-bg: #f8d7da;
+            --wrong-text: #721c24;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        h2 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-top: 0;
+        }
+        #quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 1.1rem;
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+        .correct {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct-text) !important;
+            color: var(--correct-text);
+        }
+        .incorrect {
+            background-color: var(--wrong-bg) !important;
+            border-color: var(--wrong-text) !important;
+            color: var(--wrong-text);
+        }
+        #feedback-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-weight: 500;
+        }
+        #next-btn, #restart-btn {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #next-btn:hover, #restart-btn:hover {
+            background-color: #004494;
+        }
+        #score-screen {
+            display: none;
+            text-align: center;
+        }
+        .key-hint {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 1rem;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ICS 691G</h1>
+        <h2>Implementation and Analysis of Pairwise Alignment Algorithms</h2>
+    </header>
+
+    <div id="quiz-container">
+        <div id="question-screen">
+            <p id="question-text"><strong>Loading question...</strong></p>
+            <div id="options-container">
+                <!-- Options injected here via JS -->
+            </div>
+            <div id="feedback-box"></div>
+            <button id="next-btn">Next Question (Press Enter)</button>
+            <p class="key-hint">Keyboard: Press 1-4 to select, Enter to continue.</p>
+        </div>
+
+        <div id="score-screen">
+            <h2>Quiz Complete!</h2>
+            <p>Your score: <span id="final-score">0</span> out of 10</p>
+            <button id="restart-btn">Try Again (Press Enter)</button>
+        </div>
+    </div>
+
+    <footer>Made by Dr. Kealoha with Gemini</footer>
+
+    <script>
+        // Edit your 10 questions here. 
+        // 'answer' is the index (0-3) of the correct choice in the 'options' array.
+        const quizData = [
+            {
+                question: "If a Needleman-Wunsch DP matrix is initialized with a linear gap penalty d, what is the value of the cell at row i, column 0?",
+                options: ["0", "i * d", "-d", "Negative infinity"],
+                answer: 2,
+                explanation: "In global alignment, the first column accumulates gap penalties sequentially as i * d to reflect the cost of aligning the entire prefix of sequence 1 to gaps."
+            },
+            {
+                question: "Which mathematical condition strictly distinguishes the Smith-Waterman recurrence relation from the Needleman-Wunsch recurrence?",
+                options: ["The inclusion of a zero term in the maximization function", "The use of an affine gap penalty", "The traceback starting from the bottom-right cell", "The scoring of mismatches as negative values"],
+                answer: 0,
+                explanation: "The inclusion of a 0 in the max() function prevents the score from dropping below zero, effectively allowing the alignment to restart and find local similarities."
+            },
+            {
+                question: "Given two sequences of lengths N and M, what are the time and space complexities of the standard Needleman-Wunsch algorithm, respectively?",
+                options: ["O(N+M) and O(N+M)", "O(NM) and O(min(N,M))", "O(NM) and O(NM)", "O(N log M) and O(NM)"],
+                answer: 2,
+                explanation: "The algorithm must compute an N x M matrix, requiring O(NM) time and O(NM) space to store the full matrix for traceback."
+            },
+            {
+                question: "During traceback, if multiple paths yield the same optimal score, what is the consequence in a biological context?",
+                options: ["One path is mathematically incorrect and must be pruned", "The sequences are guaranteed to be from different species", "There are alternative, equally optimal alignments that may represent different evolutionary scenarios", "The substitution matrix is not symmetric"],
+                answer: 2,
+                explanation: "Multiple optimal paths indicate alternative alignments that share the maximum score, representing equally plausible evolutionary hypotheses under the given scoring scheme."
+            },
+            {
+                question: "If you upgrade an algorithm from a linear gap penalty to an affine gap penalty model, how does the memory requirement of the DP approach change?",
+                options: ["It remains identical as only one matrix is needed", "It increases by a constant factor because three matrices are typically tracked", "It decreases because fewer gaps are allowed", "It grows exponentially with sequence length"],
+                answer: 1,
+                explanation: "Affine gap penalties require tracking the state of gaps (opening vs. extending), usually implemented with three dynamic programming matrices (Match, Insert X, Insert Y) instead of one."
+            },
+            {
+                question: "When designing a substitution matrix like BLOSUM or PAM, what does a positive score mathematically represent?",
+                options: ["The two amino acids have identical molecular weights", "The substitution occurs more frequently than expected by random chance", "The alignment algorithm will terminate at this position", "The gap penalty will be waived for the next position"],
+                answer: 1,
+                explanation: "Positive scores in log-odds substitution matrices indicate that the frequency of that specific substitution in nature is higher than the background random probability."
+            },
+            {
+                question: "In a Smith-Waterman alignment, if all match scores are negative and the gap penalty is negative, what will be the highest score in the DP matrix?",
+                options: ["Negative infinity", "The least negative mismatch score", "The gap penalty", "Zero"],
+                answer: 3,
+                explanation: "Because Smith-Waterman bounds the minimum cell value at zero via the max(0, ...) operation, a matrix with purely negative scoring options will simply be filled with zeros."
+            },
+            {
+                question: "Why do basic Needleman-Wunsch and Smith-Waterman algorithms exhibit identical asymptotic wall-clock times when aligning the same sequence pair?",
+                options: ["Both perform a traceback of identical length", "Both evaluate the same number of cells using an identical number of constant-time operations per cell", "Both ignore mismatch penalties", "Local alignment uses a heuristic that accidentally matches global alignment time"],
+                answer: 1,
+                explanation: "Regardless of local or global, both algorithms must compute every cell in the N x M matrix, doing a constant number of lookups and additions per cell."
+            },
+            {
+                question: "In the Smith-Waterman algorithm, where exactly does the traceback phase begin?",
+                options: ["At the bottom-right cell (N, M)", "At the top-left cell (0,0)", "At the cell containing the maximum absolute value in the matrix", "At the cell containing the highest positive score anywhere in the matrix"],
+                answer: 3,
+                explanation: "Local alignments trace back starting from the highest peak of similarity, which corresponds to the absolute maximum score located anywhere in the DP matrix."
+            },
+            {
+                question: "When aligning two highly divergent sequences, the percent identity might be low. How is the statistical significance of their alignment score typically evaluated?",
+                options: ["By comparing it to the alignment scores of randomly shuffled versions of the sequences", "By ensuring the percent identity is above 50%", "By checking if the Needleman-Wunsch and Smith-Waterman scores are identical", "By counting the number of exact matches"],
+                answer: 0,
+                explanation: "Statistical significance (like an E-value) is estimated by comparing the observed alignment score against a background distribution generated from random sequences of similar composition."
+            }
+        ];
+
+        let currentOrder = [];
+        let currentIndex = 0;
+        let score = 0;
+        let state = "answering"; // 'answering', 'feedback', 'finished'
+
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackBox = document.getElementById('feedback-box');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionScreen = document.getElementById('question-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreLabel = document.getElementById('final-score');
+
+        // Fisher-Yates shuffle to randomize question order
+        function shuffleQuestions() {
+            currentOrder = Array.from({length: quizData.length}, (_, i) => i);
+            for (let i = currentOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentOrder[i], currentOrder[j]] = [currentOrder[j], currentOrder[i]];
+            }
+        }
+
+        function loadQuestion() {
+            state = "answering";
+            feedbackBox.style.display = 'none';
+            nextBtn.style.display = 'none';
+            optionsContainer.innerHTML = '';
+            
+            const qData = quizData[currentOrder[currentIndex]];
+            questionText.innerHTML = `<strong>Question ${currentIndex + 1} of 10:</strong> ${qData.question}`;
+
+            qData.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<strong>${index + 1}.</strong> ${option}`;
+                btn.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (state !== "answering") return;
+            state = "feedback";
+
+            const qData = quizData[currentOrder[currentIndex]];
+            const isCorrect = selectedIndex === qData.answer;
+            if (isCorrect) score++;
+
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === qData.answer) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            feedbackBox.style.display = 'block';
+            feedbackBox.className = isCorrect ? 'correct' : 'incorrect';
+            feedbackBox.innerHTML = `<strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong> ${qData.explanation}`;
+            
+            nextBtn.style.display = 'block';
+            nextBtn.focus();
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            state = "finished";
+            questionScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreLabel.innerText = score;
+            restartBtn.focus();
+        }
+
+        function restartQuiz() {
+            score = 0;
+            currentIndex = 0;
+            shuffleQuestions();
+            questionScreen.style.display = 'block';
+            scoreScreen.style.display = 'none';
+            loadQuestion();
+        }
+
+        // Global Keyboard Event Listener
+        document.addEventListener('keydown', (e) => {
+            if (["1", "2", "3", "4"].includes(e.key)) {
+                if (state === "answering") {
+                    selectAnswer(parseInt(e.key) - 1);
+                }
+            } else if (e.key === 'Enter') {
+                if (state === "feedback") {
+                    nextQuestion();
+                } else if (state === "finished") {
+                    restartQuiz();
+                }
+            }
+        });
+
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        // Initialize
+        shuffleQuestions();
+        loadQuestion();
+    </script>
+</body>
+</html>
